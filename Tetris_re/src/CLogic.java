@@ -17,6 +17,7 @@ public class CLogic extends CModule {
 	private boolean mFlagSpin;
 	private boolean mFlagGameEnd;
 	
+	private boolean mIsPause;
 	private boolean mIsFirstHold;
 	
 	private boolean mKeyPressed;
@@ -29,6 +30,7 @@ public class CLogic extends CModule {
 	private int mCountTime;
 	private int mTurnBlackIndex;
 	private int mBlockCount;
+	private int mLevel;
 	
 	private static final int UP = 0;
 	private static final int LEFT = 1;
@@ -51,6 +53,7 @@ public class CLogic extends CModule {
 		mBlockCount = 0;
 		mHoldBlock = new CBlock();
 		mHoldBlock.SetColor(7);
+		mLevel = 1;
 		gameend = true;
 		mFixedArr = new int[20][10];
 		mKeyPossible = new boolean[9];
@@ -69,6 +72,7 @@ public class CLogic extends CModule {
 		mFlagSpin = false;
 		mFlagGameEnd = false;
 		
+		mIsPause = false;
 		mIsFirstHold = true;
 		
 		mField = new CField();
@@ -98,27 +102,35 @@ public class CLogic extends CModule {
 	{
 		if(!mFlagGameEnd)
 		{
-			mCountTime++;
-			
-			if(mFlagFrozen)
-			{
-				FrozenProcess();
-			}
-			
-			mFlagIsDown = false;
-			
 			ProcessingKey();
 			
-			if(mCountTime == 60)
+			if (!mIsPause)
 			{
-				mCountTime = 0;
-				BlockMove(DOWN);
+				mCountTime++;
+				mLevel = (mBlockCount / 100) + 1;
+				
+				if (mLevel > 10)
+				{
+					mLevel = 10;
+				}
+				
+				if(mFlagFrozen)
+				{
+					FrozenProcess();
+				}
+				
+				mFlagIsDown = false;
+				
+				if(mCountTime > (60 / mLevel))
+				{
+					mCountTime = 0;
+					BlockMove(DOWN);
+				}
+				
+				mFlagSpin = false;
+				
+				JoinArr();
 			}
-			
-			mFlagSpin = false;
-			
-			JoinArr();
-			mBlockCount++;
 		}
 		else
 		{
@@ -154,6 +166,11 @@ public class CLogic extends CModule {
 	public int GetBlockCount()
 	{
 		return mBlockCount;
+	}
+	
+	public boolean GetGameStatus()
+	{
+		return mIsPause;
 	}
 	
 	void JoinArr()
@@ -240,6 +257,14 @@ public class CLogic extends CModule {
 			BlockHold();
 			break;
 		case KEY_P:
+			if(mIsPause)
+			{
+				mIsPause = false;
+			}
+			else
+			{
+				mIsPause = true;
+			}
 			break;
 		}
 	}

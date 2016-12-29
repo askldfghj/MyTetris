@@ -66,6 +66,7 @@ public class GameManager
 		rend.SetNextBlockNum(mLogicModule.GetNextBlockNum());
 		rend.SetHoldBlockNum(mLogicModule.GetHoldBlockNum());
 		rend.SetBlockCount(mLogicModule.GetBlockCount());
+		rend.SetGameStatus(mLogicModule.GetGameStatus());
 		rend.repaint();
 	}
 	

@@ -7,39 +7,31 @@ import javax.swing.JPanel;
 
 public class Renderer extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private Image block1;
-	private Image block2;
-	private Image block3;
-	private Image block4;
-	private Image block5;
-	private Image block6;
-	private Image block7;
-	private Image end_block;
-	private Image err;
-	private Image bakc_ground;
-	private Image pause;
-	private Image title;
-	private Image start1;
-	private Image start2;
-	private Image exit1;
-	private Image exit2;
-	private Image arrow;
-	private Image mPerfectBlock[];
-	private Image numbers[];
-	private Image lines[];
-	private Image ranks[];
+	private Image mBlocks[];
+	private Image mEndBlock;
+	private Image mBackGround;
+	private Image mPauseImage;
+	private Image mTitleImage;
+	private Image mStartButton;
+	private Image mStartButton_N;
+	private Image mExitButton;
+	private Image mExitButton_N;
+	private Image mArrowImage;
+	private Image mPerfectBlocks[];
+	private Image mNumbers[];
+	private Image mLines[];
+	private Image mRanks[];
 	private Image end_phase;
 	private Image press_enter;
-	private int hold;
-	private int next;
-	private int level;
+	private int mHoldNum;
+	private int mNextNum;
+	private int mLevel;
 	private int mBlockCount;
-	private int hund;
-	private int ten;
-	private int one;
-	private int pressed_pause;
-	private int atoz;
-	private int er;
+	private int mHundredNum;
+	private int mTenNum;
+	private int mOneNum;
+	private boolean pressed_pause;
+	private int mOneAndNine;
 	private int state;
 	private int is_end;
 	private int line_1;
@@ -58,31 +50,32 @@ public class Renderer extends JPanel {
 	private int line4_one;
 	private int line4_ten;
 	private int line4_hund;
-	private int rank;
-	private int score;
+	private int mRank;
+	private int mScore;
 	private int[][] mFixedArr;
 	
 	public Renderer()
 	{
-		numbers = new Image[10];
-		mPerfectBlock = new Image[8];
-		lines = new Image[4];
-		ranks = new Image[7];
-		hold = 7;
-		next = 0;
-		level = 1;
-		hund = 0;
-		ten = 0;
-		one = 0;
-		atoz = 0;
+		mBlocks = new Image[7];
+		mNumbers = new Image[10];
+		mPerfectBlocks = new Image[8];
+		mLines = new Image[4];
+		mRanks = new Image[7];
+		mHoldNum = 7;
+		mNextNum = 0;
+		mLevel = 1;
+		mHundredNum = 0;
+		mTenNum = 0;
+		mOneNum = 0;
+		mOneAndNine = 0;
 		line_1 = 0;
 		line_2 = 0;
 		line_3 = 0;
 		line_4 = 0;
-		pressed_pause = 0;
+		pressed_pause = false;
 		state = 0;
 		is_end = 0;
-		score = 0;
+		mScore = 0;
 		ImageIcon b1 = new ImageIcon("images/block1.jpg");
 		ImageIcon b2 = new ImageIcon("images/block2.jpg");
 		ImageIcon b3 = new ImageIcon("images/block3.jpg");
@@ -110,7 +103,6 @@ public class Renderer extends JPanel {
 		ImageIcon num8 = new ImageIcon("images/8.png");
 		ImageIcon num9 = new ImageIcon("images/9.png");
 		ImageIcon end = new ImageIcon("images/end_block.jpg");
-		ImageIcon error = new ImageIcon("images/error.jpg");
 		ImageIcon back = new ImageIcon("images/BackGround2.jpg");
 		ImageIcon Titled = new ImageIcon("images/TITLE.jpg");
 		ImageIcon START = new ImageIcon("images/start.png");
@@ -131,104 +123,103 @@ public class Renderer extends JPanel {
 		ImageIcon R_F = new ImageIcon("images/F.png");
 		ImageIcon EP = new ImageIcon("images/phase3.jpg");
 		ImageIcon Penter = new ImageIcon("images/press_enter.png");
-		block1 = b1.getImage();
-		block2 = b2.getImage();
-		block3 = b3.getImage();
-		block4 = b4.getImage();
-		block5 = b5.getImage();
-		block6 = b6.getImage();
-		block7 = b7.getImage();
-		pause = pa.getImage();
-		mPerfectBlock[0] = i.getImage();
-		mPerfectBlock[1] = o.getImage();
-		mPerfectBlock[2] = l.getImage();
-		mPerfectBlock[3] = j.getImage();
-		mPerfectBlock[4] = s.getImage();
-		mPerfectBlock[5] = z.getImage();
-		mPerfectBlock[6] = t.getImage();
-		mPerfectBlock[7] = q.getImage();
-		numbers[0] = num0.getImage();
-		numbers[1] = num1.getImage();
-		numbers[2] = num2.getImage();
-		numbers[3] = num3.getImage();
-		numbers[4] = num4.getImage();
-		numbers[5] = num5.getImage();
-		numbers[6] = num6.getImage();
-		numbers[7] = num7.getImage();
-		numbers[8] = num8.getImage();
-		numbers[9] = num9.getImage();
-		lines[0] = one_line.getImage();
-		lines[1] = two_line.getImage();
-		lines[2] = three_line.getImage();
-		lines[3] = four_line.getImage();
-		ranks[0] = R_S.getImage();
-		ranks[1] = R_A.getImage();
-		ranks[2] = R_B.getImage();
-		ranks[3] = R_C.getImage();
-		ranks[4] = R_D.getImage();
-		ranks[5] = R_E.getImage();
-		ranks[6] = R_F.getImage();
+		mBlocks[0] = b1.getImage();
+		mBlocks[1] = b2.getImage();
+		mBlocks[2] = b3.getImage();
+		mBlocks[3] = b4.getImage();
+		mBlocks[4] = b5.getImage();
+		mBlocks[5] = b6.getImage();
+		mBlocks[6] = b7.getImage();
+		mPauseImage = pa.getImage();
+		mPerfectBlocks[0] = i.getImage();
+		mPerfectBlocks[1] = o.getImage();
+		mPerfectBlocks[2] = l.getImage();
+		mPerfectBlocks[3] = j.getImage();
+		mPerfectBlocks[4] = s.getImage();
+		mPerfectBlocks[5] = z.getImage();
+		mPerfectBlocks[6] = t.getImage();
+		mPerfectBlocks[7] = q.getImage();
+		mNumbers[0] = num0.getImage();
+		mNumbers[1] = num1.getImage();
+		mNumbers[2] = num2.getImage();
+		mNumbers[3] = num3.getImage();
+		mNumbers[4] = num4.getImage();
+		mNumbers[5] = num5.getImage();
+		mNumbers[6] = num6.getImage();
+		mNumbers[7] = num7.getImage();
+		mNumbers[8] = num8.getImage();
+		mNumbers[9] = num9.getImage();
+		mLines[0] = one_line.getImage();
+		mLines[1] = two_line.getImage();
+		mLines[2] = three_line.getImage();
+		mLines[3] = four_line.getImage();
+		mRanks[0] = R_S.getImage();
+		mRanks[1] = R_A.getImage();
+		mRanks[2] = R_B.getImage();
+		mRanks[3] = R_C.getImage();
+		mRanks[4] = R_D.getImage();
+		mRanks[5] = R_E.getImage();
+		mRanks[6] = R_F.getImage();
 		end_phase = EP.getImage();
 		press_enter = Penter.getImage();
-		end_block = end.getImage();
-		err = error.getImage();
-		bakc_ground = back.getImage();
-		title = Titled.getImage();
-		start1 = START.getImage();
-		start2 = N_START.getImage();
-		exit1 = EXIT.getImage();
-		exit2 = N_EXIT.getImage();
-		arrow = ARROW.getImage();
+		mEndBlock = end.getImage();
+		mBackGround = back.getImage();
+		mTitleImage = Titled.getImage();
+		mStartButton = START.getImage();
+		mStartButton_N = N_START.getImage();
+		mExitButton = EXIT.getImage();
+		mExitButton_N = N_EXIT.getImage();
+		mArrowImage = ARROW.getImage();
 	}
 	
 	public void Init(){
-		hold = 7;
-		next = 0;
-		level = 1;
-		hund = 0;
-		ten = 0;
-		one = 0;
-		atoz = 0;
+		mHoldNum = 7;
+		mNextNum = 0;
+		mLevel = 1;
+		mHundredNum = 0;
+		mTenNum = 0;
+		mOneNum = 0;
+		mOneAndNine = 0;
 		line_1 = 0;
 		line_2 = 0;
 		line_3 = 0;
 		line_4 = 0;
-		pressed_pause = 0;
-		score = 0;
+		pressed_pause = false;
+		mScore = 0;
 	}
 	
-	public void arrange_etc() {
+	public void ArrangeScoreBoard() {
 		if (mBlockCount <= 999)
 		{
-			hund = mBlockCount / 100;
-			mBlockCount -= hund * 100;
-			ten = mBlockCount / 10;
-			one = mBlockCount - ten * 10;
+			mHundredNum = mBlockCount / 100;
+			mBlockCount -= mHundredNum * 100;
+			mTenNum = mBlockCount / 10;
+			mOneNum = mBlockCount - mTenNum * 10;
 		}
 		else
 		{
-			hund = 9;
-			ten = 9;
-			one = 9;
+			mHundredNum = 9;
+			mTenNum = 9;
+			mOneNum = 9;
 		}
-		if (hund < 9)
+		if (mHundredNum < 9)
 		{
-			level = hund + 1;
+			mLevel = mHundredNum + 1;
 		}
 		else
 		{
-			level = hund;
-			atoz = 9;
+			mLevel = mHundredNum;
+			mOneAndNine = 9;
 		}
 	}
 	
 	public void rank_compute(){
 			
-			score += line_1 * 10;
-			score += line_2 * 20;
-			score += line_3 * 30;
-			score += line_4 * 40;
-			score += (level-1) * 100;
+			mScore += line_1 * 10;
+			mScore += line_2 * 20;
+			mScore += line_3 * 30;
+			mScore += line_4 * 40;
+			mScore += (mLevel-1) * 100;
 			line1_hund = line_1 / 100;
 			line_1 = line_1-(line1_hund*100);
 			line1_ten = line_1 / 10;
@@ -261,60 +252,65 @@ public class Renderer extends JPanel {
 	}
 	
 	public void paint(Graphics g) {
-		arrange_etc();
-		g.drawImage(bakc_ground, 0, 0, null);
+		ArrangeScoreBoard();
+		g.drawImage(mBackGround, 0, 0, null);
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 10; j++) {
 				if (mFixedArr[i][j] == 1) {
-					g.drawImage(block1, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mBlocks[0], j * 32 + 464, i * 32 + 64, null);
 				} else if (mFixedArr[i][j] == 2) {
-					g.drawImage(block2, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mBlocks[1], j * 32 + 464, i * 32 + 64, null);
 				} else if (mFixedArr[i][j] == 3) {
-					g.drawImage(block3, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mBlocks[2], j * 32 + 464, i * 32 + 64, null);
 				} else if (mFixedArr[i][j] == 4) {
-					g.drawImage(block4, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mBlocks[3], j * 32 + 464, i * 32 + 64, null);
 				} else if (mFixedArr[i][j] == 5) {
-					g.drawImage(block5, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mBlocks[4], j * 32 + 464, i * 32 + 64, null);
 				} else if (mFixedArr[i][j] == 6) {
-					g.drawImage(block6, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mBlocks[5], j * 32 + 464, i * 32 + 64, null);
 				} else if (mFixedArr[i][j] == 7) {
-					g.drawImage(block7, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mBlocks[6], j * 32 + 464, i * 32 + 64, null);
 				} else if (mFixedArr[i][j] == 8) {
-					g.drawImage(end_block, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mEndBlock, j * 32 + 464, i * 32 + 64, null);
 				} else if ((mFixedArr[i][j] != 0)
 						|| (mFixedArr[i][j] > 8)) {
-					g.drawImage(end_block, j * 32 + 464, i * 32 + 64, null);
+					g.drawImage(mEndBlock, j * 32 + 464, i * 32 + 64, null);
 				}
 			}
 		}
-		g.drawImage(mPerfectBlock[next], 794, 64, null);
-		g.drawImage(mPerfectBlock[hold], 314, 64, null);
-		g.drawImage(numbers[level], 891, 436, null);
-		g.drawImage(numbers[level], 829, 626, null);
-		g.drawImage(numbers[atoz], 859, 626, null);
-		g.drawImage(numbers[atoz], 889, 626, null);
-		g.drawImage(numbers[hund], 829, 550, null);
-		g.drawImage(numbers[ten], 859, 550, null);
-		g.drawImage(numbers[one], 889, 550, null);
+		g.drawImage(mPerfectBlocks[mNextNum], 794, 64, null);
+		g.drawImage(mPerfectBlocks[mHoldNum], 314, 64, null);
+		g.drawImage(mNumbers[mLevel], 891, 436, null);
+		g.drawImage(mNumbers[mLevel], 829, 626, null);
+		g.drawImage(mNumbers[mOneAndNine], 859, 626, null);
+		g.drawImage(mNumbers[mOneAndNine], 889, 626, null);
+		g.drawImage(mNumbers[mHundredNum], 829, 550, null);
+		g.drawImage(mNumbers[mTenNum], 859, 550, null);
+		g.drawImage(mNumbers[mOneNum], 889, 550, null);
 
-		if (pressed_pause == 1) {
-			g.drawImage(pause, 330, 186, null);
+		if (pressed_pause) {
+			g.drawImage(mPauseImage, 330, 186, null);
 		}
 		
 	}
 	
 	public void SetNextBlockNum(int num)
 	{
-		next = num; 
+		mNextNum = num; 
 	}
 	
 	public void SetHoldBlockNum(int num)
 	{
-		hold = num;
+		mHoldNum = num;
 	}
 	
 	public void SetBlockCount(int num)
 	{
 		mBlockCount = num;
+	}
+	
+	public void SetGameStatus(boolean stat)
+	{
+		pressed_pause = stat;
 	}
 }
