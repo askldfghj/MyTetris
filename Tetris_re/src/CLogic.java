@@ -28,6 +28,7 @@ public class CLogic extends CModule {
 	private int PreY;
 	private int mCountTime;
 	private int mTurnBlackIndex;
+	private int mBlockCount;
 	
 	private static final int UP = 0;
 	private static final int LEFT = 1;
@@ -47,6 +48,7 @@ public class CLogic extends CModule {
 	public void Init()
 	{	
 		mCountTime = 0;
+		mBlockCount = 0;
 		mHoldBlock = new CBlock();
 		mHoldBlock.SetColor(7);
 		gameend = true;
@@ -115,7 +117,8 @@ public class CLogic extends CModule {
 			
 			mFlagSpin = false;
 			
-			JoinArr();			
+			JoinArr();
+			mBlockCount++;
 		}
 		else
 		{
@@ -146,6 +149,11 @@ public class CLogic extends CModule {
 	public int GetHoldBlockNum()
 	{
 		return mHoldBlock.GetBlockNum();
+	}
+	
+	public int GetBlockCount()
+	{
+		return mBlockCount;
 	}
 	
 	void JoinArr()
@@ -336,6 +344,7 @@ public class CLogic extends CModule {
 	
 	void FrozenProcess()
 	{
+		mBlockCount++;
 		mCurrentBlock.ClearArray();
 		mCurrentBlock.IntoArray();
 		mField.AddField(mCurrentBlock.GetBlockArr(), (mCurrentBlock.GetBlockNum()+1));

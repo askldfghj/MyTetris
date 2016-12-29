@@ -33,6 +33,7 @@ public class Renderer extends JPanel {
 	private int hold;
 	private int next;
 	private int level;
+	private int mBlockCount;
 	private int hund;
 	private int ten;
 	private int one;
@@ -197,20 +198,27 @@ public class Renderer extends JPanel {
 	}
 	
 	public void arrange_etc() {
-		one++;
-		score++;
-		if (one == 10) {
-			one = 0;
-			ten++;
+		if (mBlockCount <= 999)
+		{
+			hund = mBlockCount / 100;
+			mBlockCount -= hund * 100;
+			ten = mBlockCount / 10;
+			one = mBlockCount - ten * 10;
 		}
-		if (ten == 10) {
-			ten = 0;
-			hund++;
-			level++;
-		}
-		if (hund > 10) {
+		else
+		{
 			hund = 9;
-			level = 9;
+			ten = 9;
+			one = 9;
+		}
+		if (hund < 9)
+		{
+			level = hund + 1;
+		}
+		else
+		{
+			level = hund;
+			atoz = 9;
 		}
 	}
 	
@@ -253,6 +261,7 @@ public class Renderer extends JPanel {
 	}
 	
 	public void paint(Graphics g) {
+		arrange_etc();
 		g.drawImage(bakc_ground, 0, 0, null);
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 10; j++) {
@@ -302,5 +311,10 @@ public class Renderer extends JPanel {
 	public void SetHoldBlockNum(int num)
 	{
 		hold = num;
+	}
+	
+	public void SetBlockCount(int num)
+	{
+		mBlockCount = num;
 	}
 }
