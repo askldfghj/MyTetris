@@ -7,7 +7,12 @@ import javax.swing.JPanel;
 
 public class Renderer extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private Image mBlocks[];
+	
+	private static final int SCENE1 = 1;
+	private static final int SCENE2 = 2;
+	private static final int SCENE3 = 3;
+	
+	private Image[] mBlocks;
 	private Image mEndBlock;
 	private Image mBackGround;
 	private Image mPauseImage;
@@ -17,12 +22,12 @@ public class Renderer extends JPanel {
 	private Image mExitButton;
 	private Image mExitButton_N;
 	private Image mArrowImage;
-	private Image mPerfectBlocks[];
-	private Image mNumbers[];
-	private Image mLines[];
-	private Image mRanks[];
-	private Image end_phase;
-	private Image press_enter;
+	private Image[] mPerfectBlocks;
+	private Image[] mNumbers;
+	private Image[] mLines;
+	private Image[] mRanks;
+	private Image mResultBackGround;
+	private Image mPressEnterImage;
 	private int mHoldNum;
 	private int mNextNum;
 	private int mLevel;
@@ -30,14 +35,11 @@ public class Renderer extends JPanel {
 	private int mHundredNum;
 	private int mTenNum;
 	private int mOneNum;
-	private boolean pressed_pause;
+	private boolean mFlagPausePress;
+	private int mSceneStatus;
 	private int mOneAndNine;
-	private int state;
-	private int is_end;
-	private int line_1;
-	private int line_2;
-	private int line_3;
-	private int line_4;
+	private boolean mFlagStart;
+	private int[] mEraseLineResult;
 	private int line1_one;
 	private int line1_ten;
 	private int line1_hund;
@@ -50,7 +52,6 @@ public class Renderer extends JPanel {
 	private int line4_one;
 	private int line4_ten;
 	private int line4_hund;
-	private int mRank;
 	private int mScore;
 	private int[][] mFixedArr;
 	
@@ -68,13 +69,7 @@ public class Renderer extends JPanel {
 		mTenNum = 0;
 		mOneNum = 0;
 		mOneAndNine = 0;
-		line_1 = 0;
-		line_2 = 0;
-		line_3 = 0;
-		line_4 = 0;
-		pressed_pause = false;
-		state = 0;
-		is_end = 0;
+		mFlagPausePress = false;
 		mScore = 0;
 		ImageIcon b1 = new ImageIcon("images/block1.jpg");
 		ImageIcon b2 = new ImageIcon("images/block2.jpg");
@@ -160,8 +155,8 @@ public class Renderer extends JPanel {
 		mRanks[4] = R_D.getImage();
 		mRanks[5] = R_E.getImage();
 		mRanks[6] = R_F.getImage();
-		end_phase = EP.getImage();
-		press_enter = Penter.getImage();
+		mResultBackGround = EP.getImage();
+		mPressEnterImage = Penter.getImage();
 		mEndBlock = end.getImage();
 		mBackGround = back.getImage();
 		mTitleImage = Titled.getImage();
@@ -180,12 +175,10 @@ public class Renderer extends JPanel {
 		mTenNum = 0;
 		mOneNum = 0;
 		mOneAndNine = 0;
-		line_1 = 0;
-		line_2 = 0;
-		line_3 = 0;
-		line_4 = 0;
-		pressed_pause = false;
+		mFlagPausePress = false;
+		mEraseLineResult = new int[5];
 		mScore = 0;
+		mFlagStart = true;
 	}
 	
 	public void ArrangeScoreBoard() {
@@ -213,38 +206,28 @@ public class Renderer extends JPanel {
 		}
 	}
 	
-	public void rank_compute(){
+	public void ResultBoardArrange(){
+			line1_hund = mEraseLineResult[0] / 100;
+			mEraseLineResult[0] = mEraseLineResult[0]-(line1_hund*100);
+			line1_ten = mEraseLineResult[0] / 10;
+			line1_one  = mEraseLineResult[0]-(line1_ten*10);
 			
-			mScore += line_1 * 10;
-			mScore += line_2 * 20;
-			mScore += line_3 * 30;
-			mScore += line_4 * 40;
-			mScore += (mLevel-1) * 100;
-			line1_hund = line_1 / 100;
-			line_1 = line_1-(line1_hund*100);
-			line1_ten = line_1 / 10;
-			line_1 = line_1-(line1_ten*10);
-			line1_one = line_1;
+			line2_hund = mEraseLineResult[1] / 100;
+			mEraseLineResult[1] = mEraseLineResult[1]-(line2_hund*100);
+			line2_ten = mEraseLineResult[1] / 10;
+			line2_one = mEraseLineResult[1] -(line2_ten*10);
 			
-			line2_hund = line_2 / 100;
-			line_2 = line_2-(line2_hund*100);
-			line2_ten = line_2 / 10;
-			line_2 = line_2-(line2_ten*10);
-			line2_one = line_2;
+			line3_hund = mEraseLineResult[2] / 100;
+			mEraseLineResult[2] = mEraseLineResult[2]-(line3_hund*100);
+			line3_ten = mEraseLineResult[2] / 10;
+			line3_one = mEraseLineResult[2]-(line3_ten*10);
 			
-			line3_hund = line_3 / 100;
-			line_3 = line_3-(line3_hund*100);
-			line3_ten = line_3 / 10;
-			line_3 = line_3-(line3_ten*10);
-			line3_one = line_3;
+			line4_hund = mEraseLineResult[3] / 100;
+			mEraseLineResult[3] = mEraseLineResult[3]-(line4_hund*100);
+			line4_ten = mEraseLineResult[3] / 10;
+			line4_one = mEraseLineResult[3]-(line4_ten*10);
 			
-			line4_hund = line_4 / 100;
-			line_4 = line_4-(line4_hund*100);
-			line4_ten = line_4 / 10;
-			line_4 = line_4-(line4_ten*10);
-			line4_one = line_4;
-			
-			
+			mScore = mEraseLineResult[4];
 		}
 	public void SetFixedArr(int[][] fixedarr)
 	{
@@ -252,6 +235,73 @@ public class Renderer extends JPanel {
 	}
 	
 	public void paint(Graphics g) {
+		
+		switch(mSceneStatus)
+		{
+		case SCENE1 :
+			Scene1Render(g);
+			break;
+		case SCENE2 :
+			Scene2Render(g);
+			break;
+		case SCENE3 :
+			Scene3Render(g);
+			break;
+		}
+	}
+	
+	public void SetNextBlockNum(int num)
+	{
+		mNextNum = num; 
+	}
+	
+	public void SetHoldBlockNum(int num)
+	{
+		mHoldNum = num;
+	}
+	
+	public void SetBlockCount(int num)
+	{
+		mBlockCount = num;
+	}
+	
+	public void SetGameStatus(boolean stat)
+	{
+		mFlagPausePress = stat;
+	}
+	
+	public void SetSceneStatus(int scene_num)
+	{
+		mSceneStatus = scene_num;
+	}
+	
+	public void SetStartFlag(boolean start_status)
+	{
+		mFlagStart = start_status;
+	}
+	
+	public void SetErasedLineResult(int[] result)
+	{
+		mEraseLineResult = result;
+	}
+	
+	void Scene1Render(Graphics g)
+	{
+		g.drawImage(mTitleImage, 0, 0, null);
+		if (mFlagStart){
+			g.drawImage(mStartButton, 513, 424, null);
+			g.drawImage(mExitButton_N, 578, 525, null);
+			g.drawImage(mArrowImage, 460, 433, null);
+		}
+		else {
+			g.drawImage(mStartButton_N, 541, 430, null);
+			g.drawImage(mExitButton, 565, 517, null);
+			g.drawImage(mArrowImage, 510, 529, null);
+		}
+	}
+	
+	void Scene2Render(Graphics g)
+	{
 		ArrangeScoreBoard();
 		g.drawImage(mBackGround, 0, 0, null);
 		for (int i = 0; i < 20; i++) {
@@ -288,29 +338,52 @@ public class Renderer extends JPanel {
 		g.drawImage(mNumbers[mTenNum], 859, 550, null);
 		g.drawImage(mNumbers[mOneNum], 889, 550, null);
 
-		if (pressed_pause) {
+		if (mFlagPausePress) {
 			g.drawImage(mPauseImage, 330, 186, null);
 		}
+	}
+	
+	void Scene3Render(Graphics g)
+	{
+		g.drawImage(mResultBackGround, 0, 0, null);
+		g.drawImage(mLines[0], 350, 250, null);
+		g.drawImage(mLines[1], 350, 310, null);
+		g.drawImage(mLines[2], 350, 370, null);
+		g.drawImage(mLines[3], 350, 430, null);
+		g.drawImage(mNumbers[line1_hund], 490, 258, null);
+		g.drawImage(mNumbers[line1_ten], 515, 258, null);
+		g.drawImage(mNumbers[line1_one], 540, 258, null);
+		g.drawImage(mNumbers[line2_hund], 490, 318, null);
+		g.drawImage(mNumbers[line2_ten], 515, 318, null);
+		g.drawImage(mNumbers[line2_one], 540, 318, null);
+		g.drawImage(mNumbers[line3_hund], 490, 378, null);
+		g.drawImage(mNumbers[line3_ten], 515, 378, null);
+		g.drawImage(mNumbers[line3_one], 540, 378, null);
+		g.drawImage(mNumbers[line4_hund], 490, 438, null);
+		g.drawImage(mNumbers[line4_ten], 515, 438, null);
+		g.drawImage(mNumbers[line4_one], 540, 438, null);
+		g.drawImage(mPressEnterImage, 450, 600, null);
 		
-	}
-	
-	public void SetNextBlockNum(int num)
-	{
-		mNextNum = num; 
-	}
-	
-	public void SetHoldBlockNum(int num)
-	{
-		mHoldNum = num;
-	}
-	
-	public void SetBlockCount(int num)
-	{
-		mBlockCount = num;
-	}
-	
-	public void SetGameStatus(boolean stat)
-	{
-		pressed_pause = stat;
+		if(mScore < 300){
+			g.drawImage(mRanks[6], 750, 300, null);
+		}
+		else if (mScore < 700){
+			g.drawImage(mRanks[5], 750, 300, null);
+		}
+		else if (mScore < 1200){
+			g.drawImage(mRanks[4], 750, 300, null);
+		}
+		else if (mScore < 3000){
+			g.drawImage(mRanks[3], 750, 300, null);
+		}
+		else if (mScore < 5000){
+			g.drawImage(mRanks[2], 750, 300, null);
+		}
+		else if (mScore < 9000){
+			g.drawImage(mRanks[1], 750, 300, null);
+		}
+		else if (mScore >= 9000){
+			g.drawImage(mRanks[0], 750, 300, null);
+		}
 	}
 }

@@ -71,13 +71,12 @@ public class CField extends CModule{
 		}
 	}
 	
-	public boolean EraseLine()
+	public int EraseLine()
 	{
 		int i = 0;
 		int j = 0;
+		int erased_line = 0;
 		int blockcount = 0;
-		boolean iserased = false;
-		
 		
 		for (i = 0; i < 20; i++)
 		{
@@ -96,10 +95,10 @@ public class CField extends CModule{
 					mFieldArr[i+1][j+1] = 0;
 					mColorArr[i][j] = 0;
 				}
-				iserased = true;
+				erased_line++;
 			}
 		}
-		return iserased;
+		return erased_line;
 	}
 	
 	public void ArrangeLine()

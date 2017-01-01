@@ -4,6 +4,7 @@ public class CLogic extends CModule {
 	private CBlock mNextBlock;
 	private CBlock mHoldBlock;
 	private int mHoldBlockNum;
+	private int[] mEraseLineCount;
 	private int [][] mCurrentBlockArr;
 	private int [][] mFieldArrClone;
 	private int [][] mColorArrClone;
@@ -51,6 +52,7 @@ public class CLogic extends CModule {
 	{	
 		mCountTime = 0;
 		mBlockCount = 0;
+		mEraseLineCount = new int[5];
 		mHoldBlock = new CBlock();
 		mHoldBlock.SetColor(7);
 		mLevel = 1;
@@ -132,6 +134,7 @@ public class CLogic extends CModule {
 				JoinArr();
 			}
 		}
+		
 		else
 		{
 			if(mCountTime == 6)
@@ -146,6 +149,11 @@ public class CLogic extends CModule {
 				gameend = false;
 			}
 		}
+	}
+	
+	public int[] GetErasedLineResult()
+	{
+		return mEraseLineCount;
 	}
 
 	public int[][] GetFixedArr()
@@ -200,9 +208,11 @@ public class CLogic extends CModule {
 	
 	void LineErase()
 	{
-		if(mField.EraseLine())
+		int result = mField.EraseLine();
+		if(result > 0)
 		{
 			mField.ArrangeLine();
+			mEraseLineCount[result-1] += 1;
 		}
 	}
 	
@@ -365,6 +375,15 @@ public class CLogic extends CModule {
 		{
 			mFixedArr[index][j] = 8;
 		}
+	}
+	
+	void ComputeRank()
+	{
+		mEraseLineCount[4] += mEraseLineCount[0] * 10;
+		mEraseLineCount[4] += mEraseLineCount[1] * 20;
+		mEraseLineCount[4] += mEraseLineCount[2] * 30;
+		mEraseLineCount[4] += mEraseLineCount[3] * 40;
+		mEraseLineCount[4] += (mLevel-1) * 100;
 	}
 	
 	void FrozenProcess()

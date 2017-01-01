@@ -6,50 +6,84 @@ public class GameManager
 	private WindowFrame window;
 	private Renderer rend;
 	private CKeyinput mKeyModule;
+	private CTitle mTitleModule;
 	private CLogic mLogicModule;
+	private CResult mResultModule;
+	
+	private int mCurrentScene;
+	private double mPreviousTime;
+	private double mCurrentTime;
+	private double mLag;
+	private double mSleeptime;
+	
 	private static final double MS_PER_UPDATE = 1000/60;
 	//Init GameManger
+
+	private static final int SCENE1 = 1;
+	private static final int SCENE2 = 2;
+	private static final int SCENE3 = 3;
 	
 	public GameManager()
 	{
+		mCurrentScene = 1;
 		modules = new Vector<CModule>();
+		
 		mKeyModule = new CKeyinput();
 		modules.add(mKeyModule);
+		
+		mTitleModule = new CTitle(mKeyModule);
 		mLogicModule = new CLogic(mKeyModule);
-		modules.add(mLogicModule);
-		int i;
-		for (i = 0; i < modules.size(); i++)
-		{
-			modules.elementAt(i).Init();
-		}
+		mResultModule = new CResult(mKeyModule);
+		
+		
 		rend = new Renderer();
 		rend.Init();
+		
 		window = new WindowFrame((CKeyinput)modules.elementAt(0), rend);
+		
+		mKeyModule.Init();
+		
 	}
 	
 	public void Run()
 	{
-		double previous_time;
-		double current_time;
-		double lag;
-		double sleep_time;
-		while(modules.elementAt(1).gameend)
+		while(true)
 		{
-			previous_time = System.currentTimeMillis();
-			GameUpdate();
-			GameRender();			
-			current_time = System.currentTimeMillis();
-			lag = current_time - previous_time;
-			sleep_time = MS_PER_UPDATE - lag;
-			if(sleep_time < 0)
-				sleep_time = 0;
-			System.out.println(sleep_time);
-			try {
-				Thread.sleep((long) sleep_time);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			mCurrentScene = 1;
+			
+			mTitleModule.Init();
+			modules.add(mTitleModule);
+			
+			while(!mTitleModule.GetSelectFlag())
+			{
+				GameLoop();
 			}
+			if(!mTitleModule.GetStartFlag())
+			{
+				break;
+			}
+			mCurrentScene = 2;
+			
+			modules.removeElementAt(modules.size()-1);
+			mLogicModule.Init();
+			modules.add(mLogicModule);
+			while(mLogicModule.gameend)
+			{
+				GameLoop();
+			}
+			mLogicModule.ComputeRank();
+			rend.SetErasedLineResult(mLogicModule.GetErasedLineResult());
+			rend.ResultBoardArrange();
+			mCurrentScene = 3;
+			
+			modules.removeElementAt(modules.size()-1);
+			mResultModule.Init();
+			modules.add(mResultModule);
+			while(!mResultModule.GetEnterStatus())
+			{
+				GameLoop();
+			}
+			modules.removeElementAt(modules.size()-1);
 		}
 	}
 	void GameUpdate()
@@ -62,12 +96,27 @@ public class GameManager
 	}
 	void GameRender()
 	{
-		rend.SetFixedArr(mLogicModule.GetFixedArr());
-		rend.SetNextBlockNum(mLogicModule.GetNextBlockNum());
-		rend.SetHoldBlockNum(mLogicModule.GetHoldBlockNum());
-		rend.SetBlockCount(mLogicModule.GetBlockCount());
-		rend.SetGameStatus(mLogicModule.GetGameStatus());
-		rend.repaint();
+		switch(mCurrentScene)
+		{
+		case SCENE1:
+			rend.SetStartFlag(mTitleModule.GetStartFlag());
+			rend.SetSceneStatus(mCurrentScene);
+			rend.repaint();
+			break;
+		case SCENE2:
+			rend.SetFixedArr(mLogicModule.GetFixedArr());
+			rend.SetNextBlockNum(mLogicModule.GetNextBlockNum());
+			rend.SetHoldBlockNum(mLogicModule.GetHoldBlockNum());
+			rend.SetBlockCount(mLogicModule.GetBlockCount());
+			rend.SetGameStatus(mLogicModule.GetGameStatus());
+			rend.SetSceneStatus(mCurrentScene);
+			rend.repaint();
+			break;
+		case SCENE3:
+			rend.SetSceneStatus(mCurrentScene);
+			rend.repaint();
+			break;
+		}
 	}
 	
 	public void GameEnd()
@@ -78,5 +127,24 @@ public class GameManager
 			modules.elementAt(index).Destroy();	
 		}
 		modules.removeAllElements();
+	}
+	
+	void GameLoop()
+	{
+		mPreviousTime = System.currentTimeMillis();
+		GameUpdate();
+		GameRender();			
+		mCurrentTime = System.currentTimeMillis();
+		mLag = mCurrentTime - mPreviousTime;
+		mSleeptime = MS_PER_UPDATE - mLag;
+		if(mSleeptime < 0)
+			mSleeptime = 0;
+		System.out.println(mSleeptime);
+		try {
+			Thread.sleep((long) mSleeptime);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

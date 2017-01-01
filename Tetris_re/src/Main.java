@@ -4,5 +4,6 @@ public class Main {
 		GameManager game = new GameManager();
 		game.Run();
 		game.GameEnd();
+		System.exit(0);
 	}
 }
